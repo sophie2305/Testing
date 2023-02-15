@@ -47,7 +47,7 @@ components:
       example: null
       
     Meta:
-      oneOf:
+      allOf:
         - $ref: '#/components/schemas/Element'
         - $ref: '#/components/schemas/Meta_allOf'
         
