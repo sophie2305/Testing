@@ -1,77 +1,86 @@
-{
-    "openapi": "3.0.1",
-    "info": {
-        "title": "PET API",
-        "version": "v1"
-    },
-    "paths": {
-        "/pets/{name}": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Animal"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "Animal": {
-                "type": "object",
-                "oneOf": [{
-                        "$ref": "#/components/schemas/Cat"
-                    }, {
-                        "$ref": "#/components/schemas/Dog"
-                    }
-                ],
-                "properties": {
-                    "name": {
-                        "type": "string",
-                    },
-                    "animalType": {
-                        "type": "string"
-                    }
-                },
-                "discriminator": {
-                    "propertyName": "animalType"
-                }
-            },
-            "Cat": {
-                "type": "object",
-                "allOf": [{
-                        "$ref": "#/components/schemas/Animal"
-                    }, {
-                        "type": "object",
-                        "properties": {
-                            "whiskersCount": {
-                                "type": "integer",
-                            }
-                        }
-                    }
-                ]
-            },
-            "Dog": {
-                "type": "object",
-                "allOf": [{
-                        "$ref": "#/components/schemas/Animal"
-                    }, {
-                        "type": "object",
-                        "properties": {
-                            "tailWagsPerSecond": {
-                                "type": "integer",
-                            }
-                        }
-                    }
-                ]
-            },
-        }
-    }
-}
+openapi: 3.0.0
+info:
+  title: Testing circular reg with any or all of keywords
+  version: v1
+paths:
+  /DocumentReference:
+    get:
+      operationId: searchDocumentReference
+      responses:
+        '200':
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+            application/fhir+xml:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+          description: Search DocumentReference operation successful
+      summary: Search for DocumentReference resources
+      tags:
+        - NRLF Producer
+components:
+  schemas:
+    Element:
+      properties:
+        id:
+          description: Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
+          pattern: '[A-Za-z0-9\-\.]{1,64}'
+          type: string
+        extension:
+          example:
+            - url: http://example.com
+              valueString: text value
+          items:
+            $ref: '#/components/schemas/Extension'
+          type: array
+      type: object
+      
+    Extension:
+      allOf:
+        - $ref: '#/components/schemas/Element'
+        - $ref: '#/components/schemas/Extension_allOf'
+        
+    Extension_allOf:
+      properties:
+        valueMeta:
+          $ref: '#/components/schemas/Meta'
+      required:
+        - url
+      type: object
+      example: null
+      
+    Meta:
+      allOf:
+        - $ref: '#/components/schemas/Element'
+        - $ref: '#/components/schemas/Meta_allOf'
+        
+    Meta_allOf:
+      properties:
+        versionId:
+          description: The version specific identifier, as it appears in the version portion of the URL. This value changes when the resource is created, updated, or deleted.
+          pattern: '[A-Za-z0-9\-\.]{1,64}'
+          type: string
+      type: object
+      example: null
+      
+    Bundle:
+      allOf:
+        - $ref: '#/components/schemas/Resource'
+        - $ref: '#/components/schemas/Bundle_allOf'
+        
+       Resource:
+      properties:
+        meta:
+          $ref: '#/components/schemas/Meta'
+      type: object
+      
+    Bundle_allOf:
+      properties:
+        type:
+          description: Indicates the purpose of this bundle &ndash; how it is intended to be used.
+          pattern: '[^\s]+(\s[^\s]+)*'
+          type: string
+      required:
+        - type
+      type: object
