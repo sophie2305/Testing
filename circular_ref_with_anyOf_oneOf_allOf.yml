@@ -1,0 +1,77 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "PET API",
+        "version": "v1"
+    },
+    "paths": {
+        "/pets/{name}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Animal"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Animal": {
+                "type": "object",
+                "oneOf": [{
+                        "$ref": "#/components/schemas/Cat"
+                    }, {
+                        "$ref": "#/components/schemas/Dog"
+                    }
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                    },
+                    "animalType": {
+                        "type": "string"
+                    }
+                },
+                "discriminator": {
+                    "propertyName": "animalType"
+                }
+            },
+            "Cat": {
+                "type": "object",
+                "allOf": [{
+                        "$ref": "#/components/schemas/Animal"
+                    }, {
+                        "type": "object",
+                        "properties": {
+                            "whiskersCount": {
+                                "type": "integer",
+                            }
+                        }
+                    }
+                ]
+            },
+            "Dog": {
+                "type": "object",
+                "allOf": [{
+                        "$ref": "#/components/schemas/Animal"
+                    }, {
+                        "type": "object",
+                        "properties": {
+                            "tailWagsPerSecond": {
+                                "type": "integer",
+                            }
+                        }
+                    }
+                ]
+            },
+        }
+    }
+}
