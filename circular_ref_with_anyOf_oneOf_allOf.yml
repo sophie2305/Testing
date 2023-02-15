@@ -23,10 +23,6 @@ components:
   schemas:
     Element:
       properties:
-        id:
-          description: Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.
-          pattern: '[A-Za-z0-9\-\.]{1,64}'
-          type: string
         extension:
           example:
             - url: http://example.com
