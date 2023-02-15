@@ -69,7 +69,7 @@ components:
         - $ref: '#/components/schemas/Resource'
         - $ref: '#/components/schemas/Bundle_allOf'
         
-       Resource:
+    Resource:
       properties:
         meta:
           $ref: '#/components/schemas/Meta'
@@ -79,7 +79,6 @@ components:
       properties:
         type:
           description: Indicates the purpose of this bundle &ndash; how it is intended to be used.
-          pattern: '[^\s]+(\s[^\s]+)*'
           type: string
       required:
         - type
